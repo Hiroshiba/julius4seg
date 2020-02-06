@@ -18,13 +18,7 @@ python3 run_segment.py sample_voice.wav sample_kana.txt seg.txt
 
 ### 注意事項
 
-_run_segment.py_ 内の
-```
-sp_inserter.JULIUS_ROOT = PurePath('/Users/yamachu/tmp/dictation-kit')
-```
-のPATHを自分の環境に合わせること．
-
-またJuliusの制約上，長い音声をセグメンテーションしようとした場合，失敗することがあります．
+Juliusの制約上，長い音声をセグメンテーションしようとした場合，失敗することがあります．
 
 <details>
 <summary>セグメント結果の例</summary>
