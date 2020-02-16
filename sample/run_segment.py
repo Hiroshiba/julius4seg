@@ -29,7 +29,8 @@ def main(args):
 
     assert len(base_kan_text) == len(base_kata_text.split())
 
-    julius_phones = [sp_inserter.conv2julius(hira) for hira in
+    conv_funtion = sp_inserter.conv2julius if not args.like_openjtalk else sp_inserter.conv2openjtalk
+    julius_phones = [conv_funtion(hira) for hira in
                      [sp_inserter.kata2hira(kata) for kata in base_kata_text.split()]]
 
     dict_1st = sp_inserter.gen_julius_dict_1st(base_kan_text, julius_phones)
@@ -95,6 +96,8 @@ if __name__ == '__main__':
     parser.add_argument('wav_file', type=Path, help='入力音声')
     parser.add_argument('input_kana_file', type=Path, help='スペース区切りのカナ読みファイル')
     parser.add_argument('output_seg_file', type=Path, help='時間情報付き音素セグメントファイル')
+
+    parser.add_argument('--like_openjtalk', action='store_true', help='OpenJTalkのような音素列にする')
 
     parser.add_argument('-it', '--input_text_file', help='漢字仮名交じり文')
     parser.add_argument('-ot', '--output_text_file', help='漢字仮名交じり文にspを挿入したもの')

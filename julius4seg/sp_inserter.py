@@ -343,6 +343,15 @@ def conv2julius(s: str) -> str:
     return s
 
 
+def conv2openjtalk(s: str) -> str:
+    '''入力の単語の読み（ひらがな）をOpenJTalkのような音素列に変換'''
+    s = conv2julius(s)
+
+    s = re.sub(r'(.):', r'\1 \1', s)
+
+    return s
+
+
 def gen_julius_dict_1st(text_symbols: [str], word_phones: [str]) -> str:
     '''テキストのシンボルと読みの音素のJulius dictファイルの中身を生成
     args:
