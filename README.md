@@ -10,6 +10,12 @@ grammer-kitとsegmentation-kitを足して2で割ったような立ち位置．
 
 see: https://github.com/yamachu/julius4seg/blob/master/sample/README.md
 
+### pip installして使う方
+
+```sh
+$ pip install git+https://github.com/Hiroshiba/julius4seg
+```
+
 ### Dockerで使う方
 
 see: https://hub.docker.com/r/yamachu/julius4seg

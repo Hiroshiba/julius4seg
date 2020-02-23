@@ -1,11 +1,8 @@
-import sys
-
-sys.path.append('..')
+import argparse
+import array
+import wave
 
 from julius4seg import sp_remover
-import array
-import argparse
-import wave
 
 
 def main(args):

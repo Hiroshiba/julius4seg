@@ -413,24 +413,23 @@ def gen_julius_dict_2nd(phone_seqence: str) -> str:
     returns:
         (str): Juliusのdictファイルの中身
     '''
-    return '\n'.join([
-        '0\t[w_0]\tsilB',
-        '1\t[w_1]\t{}'.format(phone_seqence),
-        '2\t[w_2]\tsilE',
-    ]) + '\n'
+    phone_seqences = phone_seqence.split(' sp ')
+    return '\n'.join(
+        [
+            f'{i}\t[w_{i}]\t{phone_seqence + (" sp" if i != len(phone_seqences) - 1 else "")}'
+            for i, phone_seqence in enumerate(phone_seqences)
+        ] +
+        [f'{len(phone_seqences)}\t[w_{len(phone_seqences)}]\tsilB'] +
+        [f'{len(phone_seqences) + 1}\t[w_{len(phone_seqences) + 1}]\tsilE']
+    ) + '\n'
 
 
-def gen_julius_aliment_dfa() -> str:
+def gen_julius_aliment_dfa(number_of_words: int) -> str:
     '''強制アライメント用のdfaファイルの中身を生成
     returns:
         (str): Juliusのdfaファイルの中身
     '''
-    return '\n'.join([
-        '0 2 1 0 1',
-        '1 1 2 0 0',
-        '2 0 3 0 0',
-        '3 -1 -1 1 0'
-    ]) + '\n'
+    return gen_julius_dfa(number_of_words)
 
 
 def julius_sp_insert(target_wav_file: str, aliment_file_signiture: str, model_path: str) -> [str]:
