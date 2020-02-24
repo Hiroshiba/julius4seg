@@ -438,6 +438,7 @@ def julius_sp_insert(target_wav_file: str, aliment_file_signiture: str, model_pa
         '-input': 'file',
         '-debug': '',
         '-gram': aliment_file_signiture,
+        '-nostrip': '',
     }
 
     file_echo_p = subprocess.Popen(['echo', target_wav_file], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
@@ -502,6 +503,7 @@ def julius_phone_alignment(target_wav_file: str, aliment_file_signiture: str, mo
         '-palign': '',
         '-input': 'file',
         '-gram': aliment_file_signiture,
+        '-nostrip': '',
     }
 
     file_echo_p = subprocess.Popen(['echo', target_wav_file], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
