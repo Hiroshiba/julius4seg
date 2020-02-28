@@ -504,6 +504,9 @@ def julius_phone_alignment(target_wav_file: str, aliment_file_signiture: str, mo
         '-input': 'file',
         '-gram': aliment_file_signiture,
         '-nostrip': '',
+        '-n': '10',
+        '-s': '10000',
+        '-sb': '5000',
     }
 
     file_echo_p = subprocess.Popen(['echo', target_wav_file], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL)
