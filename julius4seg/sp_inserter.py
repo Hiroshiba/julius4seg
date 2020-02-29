@@ -3,6 +3,7 @@ import subprocess
 import sys
 from itertools import chain
 from logging import getLogger, DEBUG, NullHandler
+from pprint import pprint
 
 logger = getLogger(__name__)
 logger.addHandler(NullHandler())
@@ -475,7 +476,11 @@ def get_sp_inserted_text(raw_output: str, debug_symbol='') -> (str, [int]):
 
 
 def get_sp_inserterd_phone_seqence(raw_output: str, debug_symbol='') -> str:
-    pass1_best_phonemeseq = next(s for s in raw_output if s.startswith('pass1_best_phonemeseq'))
+    try:
+        pass1_best_phonemeseq = next(s for s in raw_output if s.startswith('pass1_best_phonemeseq'))
+    except Exception as e:
+        pprint(raw_output)
+        raise(e)
 
     complete_re = re.compile('silB \| (.*) \| silE')
     failed_re_1 = re.compile('silE \| (.*) \| silB')
