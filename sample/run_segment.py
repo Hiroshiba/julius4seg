@@ -18,6 +18,7 @@ def run_segment(
         output_seg_file: Path,
         input_yomi_type: str,
         like_openjtalk: bool,
+        only_2nd_path: bool,
         input_text_file: Optional[Path],
         output_text_file: Optional[Path],
         hmm_model: str,
@@ -38,47 +39,51 @@ def run_segment(
     else:
         julius_phones = base_yomi_text.split(' sp ')
 
-    if input_text_file:
-        with input_text_file.open() as f:
-            base_kan_text = f.readline().strip().split()
+    if not only_2nd_path:
+        if input_text_file:
+            with input_text_file.open() as f:
+                base_kan_text = f.readline().strip().split()
+        else:
+            base_kan_text = ['sym_{}'.format(i) for i in range(len(julius_phones))]
+
+        assert len(base_kan_text) == len(julius_phones)
+
+        dict_1st = sp_inserter.gen_julius_dict_1st(base_kan_text, julius_phones)
+        dfa_1st = sp_inserter.gen_julius_dfa(dict_1st.count('\n'))
+
+        with open(f'/tmp/first_pass_{utt_id}.dict', 'w') as f:
+            f.write(dict_1st)
+
+        with open(f'/tmp/first_pass_{utt_id}.dfa', 'w') as f:
+            f.write(dfa_1st)
+
+        raw_first_output = sp_inserter.julius_sp_insert(str(wav_file), f'/tmp/first_pass_{utt_id}', hmm_model)
+
+        forced_text_with_sp = []
+        forced_phones_with_sp = []
+
+        try:
+            _, sp_position = sp_inserter.get_sp_inserted_text(raw_first_output, utt_id)
+
+            for j, zipped in enumerate(zip(base_kan_text, julius_phones)):
+                forced_text_with_sp.append(zipped[0])
+                forced_phones_with_sp.append(zipped[1])
+                if j in sp_position:
+                    forced_text_with_sp.append('<sp>')
+                    forced_phones_with_sp.append('sp')
+
+            forced_text_with_sp = ' '.join(forced_text_with_sp)
+            forced_phones_with_sp = ' '.join(forced_phones_with_sp)
+        except:
+            pass
+
+        phones_with_sp = sp_inserter.get_sp_inserterd_phone_seqence(raw_first_output, utt_id)
+
+        if len(forced_phones_with_sp) < 2:
+            forced_phones_with_sp = phones_with_sp
+
     else:
-        base_kan_text = ['sym_{}'.format(i) for i in range(len(julius_phones))]
-
-    assert len(base_kan_text) == len(julius_phones)
-
-    dict_1st = sp_inserter.gen_julius_dict_1st(base_kan_text, julius_phones)
-    dfa_1st = sp_inserter.gen_julius_dfa(dict_1st.count('\n'))
-
-    with open(f'/tmp/first_pass_{utt_id}.dict', 'w') as f:
-        f.write(dict_1st)
-
-    with open(f'/tmp/first_pass_{utt_id}.dfa', 'w') as f:
-        f.write(dfa_1st)
-
-    raw_first_output = sp_inserter.julius_sp_insert(str(wav_file), f'/tmp/first_pass_{utt_id}', hmm_model)
-
-    forced_text_with_sp = []
-    forced_phones_with_sp = []
-
-    try:
-        _, sp_position = sp_inserter.get_sp_inserted_text(raw_first_output, utt_id)
-
-        for j, zipped in enumerate(zip(base_kan_text, julius_phones)):
-            forced_text_with_sp.append(zipped[0])
-            forced_phones_with_sp.append(zipped[1])
-            if j in sp_position:
-                forced_text_with_sp.append('<sp>')
-                forced_phones_with_sp.append('sp')
-
-        forced_text_with_sp = ' '.join(forced_text_with_sp)
-        forced_phones_with_sp = ' '.join(forced_phones_with_sp)
-    except:
-        pass
-
-    phones_with_sp = sp_inserter.get_sp_inserterd_phone_seqence(raw_first_output, utt_id)
-
-    if len(forced_phones_with_sp) < 2:
-        forced_phones_with_sp = phones_with_sp
+        forced_phones_with_sp = base_yomi_text
 
     dict_2nd = sp_inserter.gen_julius_dict_2nd(forced_phones_with_sp)
     dfa_2nd = sp_inserter.gen_julius_aliment_dfa(dict_2nd.count('\n'))
@@ -112,6 +117,7 @@ def main():
 
     parser.add_argument('--input_yomi_type', default='katakana', choices=['hiragana', 'katakana', 'phoneme'])
     parser.add_argument('--like_openjtalk', action='store_true', help='OpenJTalkのような音素列にする')
+    parser.add_argument('--only_2nd_path', action='store_true', help='第二パスのみを実行する')
 
     parser.add_argument('-it', '--input_text_file', type=Path, help='漢字仮名交じり文')
     parser.add_argument('-ot', '--output_text_file', type=Path, help='漢字仮名交じり文にspを挿入したもの')

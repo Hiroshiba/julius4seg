@@ -495,6 +495,7 @@ def get_sp_inserterd_phone_seqence(raw_output: str, debug_symbol='') -> str:
         logger.info('Use not correct re to generate Phoneseq [{}]'.format(debug_symbol))
         matched = failed_re_2.search(pass1_best_phonemeseq)
     else:
+        pprint(raw_output)
         logger.warning('Failed Generate Phoneseq [{}]'.format(debug_symbol))
         raise Exception("Decode Failed")
 
