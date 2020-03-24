@@ -36,7 +36,7 @@ def get_os_dependent_exec() -> str:
 
 
 def kata2hira(kana: str) -> str:
-    '''ヴ，ヵ，ヶ以外のカタカナをひらがなに変換
+    '''ヵ，ヶ以外のカタカナをひらがなに変換
     args:
         kana(str): カタカナ文字列
             "ヤキニク"
@@ -45,7 +45,7 @@ def kata2hira(kana: str) -> str:
             "やきにく"
     '''
     return ''.join([
-        chr(ord(c) + ord('あ') - ord('ア')) if ord('ア') <= ord(c) <= ord('ン') else c
+        chr(ord(c) + ord('あ') - ord('ア')) if ord('ァ') <= ord(c) <= ord('ヴ') else c
         for c in kana
     ])
 
@@ -59,6 +59,12 @@ def conv2julius(s: str) -> str:
         (str): ひらがな文字列
             " y a k i n i k u"
     '''
+    s = s.replace('ゔぁ', ' b a')
+    s = s.replace('ゔぃ', ' b i')
+    s = s.replace('ゔぇ', ' b e')
+    s = s.replace('ゔぉ', ' b o')
+    s = s.replace('ゔゅ', ' by u')
+
     s = s.replace('あぁ', ' a a')
     s = s.replace('いぃ', ' i i')
     s = s.replace('いぇ', ' i e')
