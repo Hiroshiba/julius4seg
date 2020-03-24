@@ -34,7 +34,7 @@ def run_segment(
             base_yomi_text = sp_inserter.kata2hira(base_yomi_text)
         julius_phones = [
             conv_funtion(hira)
-            for hira in [sp_inserter.kata2hira(kata) for kata in base_yomi_text.split()]
+            for hira in base_yomi_text.split()
         ]
     else:
         julius_phones = base_yomi_text.split(' sp ')

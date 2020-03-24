@@ -44,7 +44,10 @@ def kata2hira(kana: str) -> str:
         (str): ひらがな文字列
             "やきにく"
     '''
-    return ''.join([chr(ord(c) + ord('あ') - ord('ア')) if c != 'ー' else 'ー' for c in kana])
+    return ''.join([
+        chr(ord(c) + ord('あ') - ord('ア')) if ord('ア') <= ord(c) <= ord('ン') else c
+        for c in kana
+    ])
 
 
 def conv2julius(s: str) -> str:
