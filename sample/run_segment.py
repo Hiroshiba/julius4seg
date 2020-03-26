@@ -83,7 +83,7 @@ def run_segment(
             forced_phones_with_sp = phones_with_sp
 
     else:
-        forced_phones_with_sp = base_yomi_text
+        forced_phones_with_sp = ' sp '.join(julius_phones)
 
     dict_2nd = sp_inserter.gen_julius_dict_2nd(forced_phones_with_sp)
     dfa_2nd = sp_inserter.gen_julius_aliment_dfa(dict_2nd.count('\n'))
@@ -98,6 +98,7 @@ def run_segment(
 
     time_alimented_list = sp_inserter.get_time_alimented_list(raw_second_output)
     time_alimented_list = frame_to_second(time_alimented_list)
+    assert len(time_alimented_list) > 0
 
     if output_text_file:
         with output_text_file.open('w') as f:
